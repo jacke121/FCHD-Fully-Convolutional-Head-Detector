@@ -6,7 +6,8 @@ class Config:
     min_size = 600  # image resize
     max_size = 1000 # image resize 
     caffe_pretrain = True
-    caffe_pretrain_path = '/home/aditya-tyco/Desktop/aditya_personal_projects/head_detection_v5/data/pretrained_model/vgg16_caffe.pth'
+    # caffe_pretrain_path = '/home/aditya-tyco/Desktop/aditya_personal_projects/head_detection_v5/data/pretrained_model/vgg16_caffe.pth'
+    caffe_pretrain_path = 'head_detector_final.pth'
     model_save_path = '/home/aditya-tyco/Desktop/aditya_personal_projects/head_detection_v5/checkpoints'
     # sigma for l1_smooth_loss
     rpn_sigma = 3.
@@ -16,7 +17,7 @@ class Config:
     lr = 1e-3
 
     env = 'head_detector'  # visdom env
-    port = 8097
+    # port = 8097
     plot_every = 2  # vis every N iter
 
     pretrained_model = 'vgg16'

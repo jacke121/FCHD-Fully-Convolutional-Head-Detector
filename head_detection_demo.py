@@ -1,8 +1,9 @@
 from __future__ import division
 
 import os
-import torch as t
-from src.config import opt
+import cv2
+import torch
+
 from src.head_detector_vgg16 import Head_Detector_VGG16
 from trainer import Head_Detector_Trainer
 from PIL import Image
@@ -21,14 +22,16 @@ THRESH = 0.01
 IM_RESIZE = False
 
 def read_img(path):
-    f = Image.open(path)
-    if IM_RESIZE:
-        f = f.resize((640,480), Image.ANTIALIAS)
-
-    f.convert('RGB')
-    img_raw = np.asarray(f, dtype=np.uint8)
+    # f = Image.open(path)
+    # if IM_RESIZE:
+    #     f = f.resize((640,480), Image.ANTIALIAS)
+    #
+    # f.convert('RGB')
+    img_raw = cv2.imread(path)
+    # img_raw=cv2.resize(img_raw,(640,480))
+    img_raw = np.asarray(img_raw, dtype=np.uint8)
     img_raw_final = img_raw.copy()
-    img = np.asarray(f, dtype=np.float32)
+    img = np.asarray(img_raw, dtype=np.float32)
     _, H, W = img.shape
     img = img.transpose((2,0,1))
     img = preprocess(img)
@@ -40,6 +43,10 @@ def detect(img_path, model_path):
     file_id = utils.get_file_id(img_path)
     img, img_raw, scale = read_img(img_path)
     head_detector = Head_Detector_VGG16(ratios=[1], anchor_scales=[2,4])
+
+    dict = torch.load(opt.caffe_pretrain_path)
+    head_detector.load_state_dict(dict['model'])
+
     trainer = Head_Detector_Trainer(head_detector).cuda()
     trainer.load(model_path)
     img = at.totensor(img)
@@ -53,18 +60,19 @@ def detect(img_path, model_path):
     for i in range(pred_bboxes_.shape[0]):
         ymin, xmin, ymax, xmax = pred_bboxes_[i,:]
         utils.draw_bounding_box_on_image_array(img_raw,ymin, xmin, ymax, xmax)
-    plt.axis('off')
-    plt.imshow(img_raw)
-    if SAVE_FLAG == 1:
-        plt.savefig(os.path.join(opt.test_output_path, file_id+'.png'), bbox_inches='tight', pad_inches=0)
-    else:
-        plt.show()    
+    cv2.imshow('asdf',img_raw)
+    cv2.waitKey()
+    # plt.imshow(img_raw)
+    # if SAVE_FLAG == 1:
+    #     plt.savefig(os.path.join(opt.test_output_path, file_id+'.png'), bbox_inches='tight', pad_inches=0)
+    # else:
+    #     plt.show()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--img_path", type=str, help="test image path")
-    parser.add_argument("--model_path", type=str, default='./checkpoints/sess:2/head_detector08120858_0.682282441835')
+    parser.add_argument("--img_path", type=str, default='aaa.jpg')
+    parser.add_argument("--model_path", type=str, default='head_detector_final.pth')
     args = parser.parse_args()
     detect(args.img_path, args.model_path)
     # model_path = './checkpoints/sess:2/head_detector08120858_0.682282441835'

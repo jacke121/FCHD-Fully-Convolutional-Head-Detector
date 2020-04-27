@@ -14,7 +14,6 @@ def decom_vgg16():
     if opt.caffe_pretrain:
         # Load the caffe model
         model = vgg16(pretrained=False)
-        model.load_state_dict(t.load(opt.caffe_pretrain_path))
     else:
         # Load the default model in PyTorch
         model = vgg16(pretrained=True)

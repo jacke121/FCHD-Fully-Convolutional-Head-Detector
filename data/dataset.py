@@ -26,28 +26,9 @@ def caffe_normalize(img):
     img = (img - mean).astype(np.float32, copy=True)
     return img
 
-def preprocess(img, min_size=600, max_size=1000):   
-    """ Function to preprocess the input image. 
-    
-    Scales the input image in such a manner that the shorter side of the 
-    image is converted to the size equal to min_size. 
-    Also normalizes the input image. 
+def preprocess(img, min_size=600, max_size=1000):
 
-    Args: 
-        img: Input image that is to be preprocessed. 
-        min_size: size to which the smaller side of the image is to be 
-                    converted. 
-        max_size: size to which the larger side of the image is to be 
-                    converted. 
-    """
-    C, H, W = img.shape
-    scale1 = min_size / min(H, W)
-    scale2 = max_size / max(H, W)
-    scale = min(scale1, scale2)
     img = img / 255.
-    img = sktsf.resize(img, (C, H * scale, W * scale), mode='reflect')
-    # both the longer and shorter should be less than
-    # max_size and min_size
     if opt.caffe_pretrain:
         normalize = caffe_normalize
     else:

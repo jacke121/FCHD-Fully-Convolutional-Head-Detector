@@ -87,18 +87,18 @@ def convert_hollywood(path):
     ann_folder = os.path.join(path, 'Annotations')
     for phase in PHASES:
         if phase == 'train':
-            print "Phase train ongoing..."
+            print("Phase train ongoing...")
             train_data_list_path = os.path.join(splits_folder, 'train.txt')
             train_data_path = os.path.join(path, 'hollywood_train.idl')
             convert_txt(train_data_list_path, train_data_path, ann_folder)
         elif phase == 'val':
-            print "Phase val ongoing..."
+            print("Phase val ongoing...")
 
             val_data_list_path = os.path.join(splits_folder, 'val.txt')
             val_data_path = os.path.join(path, 'hollywood_val.idl')
             convert_txt(val_data_list_path, val_data_path, ann_folder)
         else: 
-            print "Phase test ongoing..."
+            print("Phase test ongoing...")
 
             test_data_list_path = os.path.join(splits_folder, 'test.txt')
             test_data_path = os.path.join(path, 'hollywood_test.idl')
